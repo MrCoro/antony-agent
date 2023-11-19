@@ -1,0 +1,7 @@
+pyexpat
+urllib
+requests
+bs4
+dotenv
+langchain
+click

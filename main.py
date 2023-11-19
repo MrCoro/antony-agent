@@ -4,11 +4,11 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from langchain.tools import Tool, DuckDuckGoSearchResults
-from langchain.prompts import PromptTemplate #template untuk memperlengkap/jelas deskripsi prompt user
+from langchain.prompts import PromptTemplate #template untuk memperlengkap/jelas deskripsi prompt user (legacy)
 from langchain.chat_models import ChatOpenAI #model AI yang dipakai
 from langchain.chains import LLMChain
 from langchain.agents import initialize_agent, AgentType
-from langchain.schema import BaseOutputParser
+import click # for cli command prettier
 
 # for loading env variables
 load_dotenv()
@@ -28,10 +28,13 @@ HEADERS = {
 
 #operation for fetching the url
 def fetch_web_page(url: str) -> str:
-    response = requests.get(url, headers=HEADERS)
-    # response content in raw binary state like images
-    print("response content: ", response.content)
-    return parse_html(response.content)
+    try:
+        response = requests.get(url, headers=HEADERS)
+        # response content in raw binary state like images
+        print("response content: ", response.content)
+        return parse_html(response.content)
+    except Exception as e:
+        return f"error, failed to get the url: {e}"
 
 #fetch web using this tool 
 web_fetch_tool = Tool.from_function(
@@ -41,14 +44,15 @@ web_fetch_tool = Tool.from_function(
 )
 
 # create template from the promt and assign LLM for chaining
-promp_template = "summarize the following content: {content}, use your tools to search and summarize content into a guide on how to use the requests library"
+prompt_template_concepts = "summarize the following content: {content}, use your tools to search and summarize content into a guide on how to use the requests library"
+prompt_template_library = "summarize the following content: {content}, use your tools to search and summarize content into an easily understandable explanations with examples of implementation"
 #currently used LLM
 llm = ChatOpenAI(model="gpt-3.5-turbo-16k")
 
 #prompt template for defining input template
 llm_chain = LLMChain(
     llm=llm,
-    prompt=PromptTemplate.from_template(promp_template)
+    prompt=PromptTemplate.from_template(prompt_template_concepts)
 )
 
 # setting up summarizer 
@@ -69,7 +73,16 @@ agent = initialize_agent(
     verbose=True
 )
 
-#agent type zero shot react will keep questioning themself when executing the chain
-user_input = input("what would you like to learn today? ")
-#example "Research how to use the requests library in python, use your tools to search and summarize content into a guide on how to use the requests library"
-print(agent.run(user_input))
+@click.command()
+def maincommand():
+    click.echo("==============================================")
+    click.echo("===== Welcome to Autonomous Agent Mikiya =====")
+    click.echo("==============================================")
+
+    #agent type zero shot react will keep questioning themself when executing the chain
+    user_input = input("what would you like to learn today? ")
+    #example "Research how to use the requests library in python, use your tools to search and summarize content into a guide on how to use the requests library"
+    print(agent.run(user_input))
+
+if __name__ == '__main__':
+    maincommand()
