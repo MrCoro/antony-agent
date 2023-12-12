@@ -27,12 +27,12 @@ def choose_mode(mode):
     # create template from the promt and assign LLM for chaining
     prompt_template_concepts = "summarize the following content: {content}, use your tools to search and summarize content into a guide on how to use the software tools or library"
     prompt_template_library = "summarize the following content: {content}, use your tools to search and summarize content into an easily understandable explanations with examples of implementation"
-    prompt_template_excuse  = "summarize the following content: {content}, use your tools to search and explain why this specific tool or library is the perfect tool for this use case" 
+    prompt_template_usecase  = "summarize the following content: {content}, use your tools to search and explain why this specific tool or library is the perfect tool for this use case" 
     
     if mode == "library":
         return prompt_template_library
-    else if mode == "excuse":
-        return prompt_template_excuse
+    else if mode == "usecase":
+        return prompt_template_usecase
     else:
         return prompt_template_concepts
     
@@ -93,9 +93,9 @@ def maincommand(mode):
     click.echo("==============================================")
     click.echo("You can choose between these modes as the arguments:")
     click.echo("concepts : explain to you the concepts of tools or library with a summary") 
-    click.echo("library : expalin to you how tools or library works and the implementation")
-    click.echo("excuse : expalin to you what is this tools used for and their use case")
-    
+    click.echo("library : explain to you how tools or library works and the implementation")
+    click.echo("usecase : explain to you what is this tool used for and their use case")
+
     prompt_template_used = choose_mode(mode)
 
     web_fetch_tool = web_tool_definition(fetch_web_page)
