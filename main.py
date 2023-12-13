@@ -106,7 +106,6 @@ def maincommand(mode):
 
     #agent type zero shot react will keep questioning themself when executing the chain
     user_input = input("what would you like to learn today? ")
-    #example "Research how to use the requests library in python, use your tools to search and summarize content into a guide on how to use the requests library"
     print(agent.run(user_input))
 
 if __name__ == '__main__':
