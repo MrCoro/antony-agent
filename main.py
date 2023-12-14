@@ -24,7 +24,6 @@ LLM = ChatOpenAI(model="gpt-3.5-turbo-16k")
 DDG_SEARCH = DuckDuckGoSearchResults()
 
 def choose_mode(mode):
-    # create template from the promt and assign LLM for chaining
     prompt_template_concepts = "summarize the following content: {content}, use your tools to search and summarize content into a guide on how to use the software tools or library"
     prompt_template_library = "summarize the following content: {content}, use your tools to search and summarize content into an easily understandable explanations with examples of implementation"
     prompt_template_usecase  = "summarize the following content: {content}, use your tools to search and explain why this specific tool or library is the perfect tool for this use case" 
